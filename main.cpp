@@ -24,7 +24,6 @@ void clearInput() {
 // ---- Helper: print the application banner ----
 void printBanner() {
     std::cout << "\n";
-    std::cout << "************************************************************\n";
     std::cout << "*          C/C++ CODE COMPLEXITY ANALYZER                  *\n";
     std::cout << "*      Analyze Time & Space Complexity of Source Code      *\n";
     std::cout << "************************************************************\n";
