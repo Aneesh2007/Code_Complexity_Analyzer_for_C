@@ -93,9 +93,8 @@ void runAnalysisMenu(Analyzer* analyzer,
     }
 }
 
-// ============================================================
-//  main — Application entry point
-// ============================================================
+
+//  main 
 int main() {
     printBanner();
 
