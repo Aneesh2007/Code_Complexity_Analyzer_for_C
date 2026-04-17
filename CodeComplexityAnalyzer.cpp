@@ -142,10 +142,7 @@ void CodeComplexityAnalyzer::analyze() {
         if (hasArrayDeclaration(line))     arrayDeclarations++;
 
         // ---- Does THIS line have a loop/conditional keyword? ----
-        bool thisLineIsControl = isLoopLine(line)              ||
-                                 containsKeyword(line, "if")   ||
-                                 containsKeyword(line, "else") ||
-                                 containsKeyword(line, "switch");
+        bool thisLineIsControl = isLoopLine(line);
 
         // A '{' on this line opens a control block if EITHER:
         // (a) previous line set the flag, OR (b) this very line has a keyword
