@@ -5,7 +5,7 @@
 #include <cctype>
 
 // ============================================================
-//  CodeComplexityAnalyzer.cpp — Full analysis implementation
+
 // ============================================================
 
 // ---- Constructor ----
@@ -67,7 +67,7 @@ int CodeComplexityAnalyzer::countChar(const std::string& line, char ch) const {
 
 // ---- Detects STL container declarations ----
 bool CodeComplexityAnalyzer::hasContainerDeclaration(const std::string& line) const {
-    // STL containers that imply O(N) space
+    
     static const std::vector<std::string> containers = {
         "vector<", "map<", "unordered_map<", "set<",
         "unordered_set<", "list<", "deque<", "queue<",
@@ -261,12 +261,11 @@ Report CodeComplexityAnalyzer::buildFullReport() const {
     return r;
 }
 
-// ============================================================
 //  Public report printers — build report then move it for print
 // ============================================================
 void CodeComplexityAnalyzer::printNestingReport() const {
     Report r = buildNestingReport();      // built on stack
-    r.print();                            // print in place
+    r.print();                         
 }
 
 void CodeComplexityAnalyzer::printJumpReport() const {
