@@ -34,19 +34,16 @@ void CodeParser::loadFile() {
 
     lines.clear();
     std::string rawLine;
-
-    // Read line-by-line using std::getline
     while (std::getline(fileStream, rawLine)) {
         std::string cleaned = stripComment(rawLine);
         lines.push_back(cleaned);
     }
-
     fileStream.close();
-
     if (lines.empty()) {
         throw FileException("File '" + filePath + "' is empty or unreadable.");
     }
 
     std::cout << "  [OK] Loaded " << lines.size() << " lines from '"
-              << filePath << "'.\n";
+              << filePath << "'.\n";\
+    std::cout << " This code is for O powered k time for this version "<<std::endl;
 }
