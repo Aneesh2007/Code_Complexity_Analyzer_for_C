@@ -291,8 +291,11 @@ std::string CodeComplexityAnalyzer::estimateTimeComplexity() const {
     }
 
     // Case 4: Both regular and logarithmic loops found.
-    // If the log loop is nested inside the deepest regular loop the overall
-    // complexity gains a log factor: O(N^k * log N).
+    // logLoopMaxRegularDepthFound >= maxRegularLoopDepth means the log loop was
+    // found when the regular-loop nesting was already at its deepest, so the log
+    // factor multiplies the dominant polynomial term: O(N^k * log N).
+    // If it is strictly less, the log loop lives in a shallower scope and the
+    // polynomial term dominates.
     if (logLoopMaxRegularDepthFound >= maxRegularLoopDepth) {
         if (maxRegularLoopDepth == 1)
             return "O(N log N)  — Loop with logarithmic inner operation";
