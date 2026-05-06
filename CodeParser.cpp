@@ -1,6 +1,5 @@
 #include "CodeParser.h"
 #include <fstream>
-#include <sstream>
 #include <iostream>
 
 // ============================================================
@@ -9,18 +8,45 @@
 
 CodeParser::CodeParser(const std::string& path) : filePath(path) {}
 
-// Strips inline // comments so they don't confuse keyword detection
-std::string CodeParser::stripComment(const std::string& line) const {
-    // Find "//" but not inside a string literal (basic heuristic)
+// ============================================================
+//  stripComment — removes // single-line comments and
+//  /* block comments */ (including multi-line blocks).
+//  inBlockComment is passed by reference to carry state across
+//  successive calls (one call per source line).
+// ============================================================
+std::string CodeParser::stripComment(const std::string& line, bool& inBlockComment) const {
+    std::string result;
     bool inString = false;
+
     for (size_t i = 0; i < line.size(); ++i) {
-        if (line[i] == '"') inString = !inString;
-        if (!inString && i + 1 < line.size() &&
-            line[i] == '/' && line[i + 1] == '/') {
-            return line.substr(0, i); // Cut everything after //
+        if (inBlockComment) {
+            // Look for the block-comment closing sequence '*/'
+            if (i + 1 < line.size() && line[i] == '*' && line[i + 1] == '/') {
+                inBlockComment = false;
+                ++i; // consume the '/'
+            }
+            // All characters inside a block comment are dropped
+        } else {
+            // Toggle string tracking so we don't treat /* or // inside
+            // a string literal as a comment opener
+            if (line[i] == '"') inString = !inString;
+
+            if (!inString) {
+                // Single-line comment: cut the rest of the line
+                if (i + 1 < line.size() && line[i] == '/' && line[i + 1] == '/') {
+                    break;
+                }
+                // Block-comment open: set flag and skip the '/*'
+                if (i + 1 < line.size() && line[i] == '/' && line[i + 1] == '*') {
+                    inBlockComment = true;
+                    ++i; // consume the '*'
+                    continue;
+                }
+            }
+            result += line[i];
         }
     }
-    return line;
+    return result;
 }
 
 void CodeParser::loadFile() {
@@ -33,17 +59,18 @@ void CodeParser::loadFile() {
     }
 
     lines.clear();
+    bool inBlockComment = false; // tracks multi-line /* ... */ blocks
     std::string rawLine;
     while (std::getline(fileStream, rawLine)) {
-        std::string cleaned = stripComment(rawLine);
+        std::string cleaned = stripComment(rawLine, inBlockComment);
         lines.push_back(cleaned);
     }
     fileStream.close();
+
     if (lines.empty()) {
         throw FileException("File '" + filePath + "' is empty or unreadable.");
     }
 
     std::cout << "  [OK] Loaded " << lines.size() << " lines from '"
-              << filePath << "'.\n";\
-    std::cout << " This code is for O powered k time for this version "<<std::endl;
+              << filePath << "'.\n";
 }

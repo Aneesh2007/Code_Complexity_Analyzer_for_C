@@ -15,8 +15,9 @@ private:
     std::string filePath;
     std::vector<std::string> lines;
 
-    // Strips single-line comments (// ...) from a line
-    std::string stripComment(const std::string& line) const;
+    // Strips // single-line comments and handles /* block comments */ (multi-line aware).
+    // inBlockComment is updated in place to carry state across lines.
+    std::string stripComment(const std::string& line, bool& inBlockComment) const;
 
 public:
     // Custom exception for file errors
